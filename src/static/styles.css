@@ -136,6 +136,35 @@ button:hover {
   display: none;
 }
 
+/* Participants list styling */
+.participants {
+  margin-top: 12px;
+}
+
+.participants h5 {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.participants-list {
+  list-style: disc;
+  margin-left: 18px;
+  padding-left: 8px;
+  margin-top: 6px;
+}
+
+.participants-list li {
+  font-size: 14px;
+  color: #555;
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(0,0,0,0.05);
+}
+
+.participants-list li:last-child {
+  border-bottom: none;
+}
+
 footer {
   text-align: center;
   margin-top: 30px;

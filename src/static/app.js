@@ -27,6 +27,28 @@ document.addEventListener("DOMContentLoaded", () => {
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
         `;
 
+        // Participants section (kept separate to safely append list items)
+        const participantsWrapper = document.createElement("div");
+        participantsWrapper.className = "participants";
+
+        const participantsHeading = document.createElement("h5");
+        participantsHeading.textContent = "Participants";
+        participantsWrapper.appendChild(participantsHeading);
+
+        const participantsList = document.createElement("ul");
+        participantsList.className = "participants-list";
+
+        // Add each participant as a list item
+        (details.participants || []).forEach((p) => {
+          const li = document.createElement("li");
+          li.textContent = p;
+          participantsList.appendChild(li);
+        });
+
+        participantsWrapper.appendChild(participantsList);
+
+        activityCard.appendChild(participantsWrapper);
+
         activitiesList.appendChild(activityCard);
 
         // Add option to select dropdown
