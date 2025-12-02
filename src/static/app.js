@@ -38,12 +38,63 @@ document.addEventListener("DOMContentLoaded", () => {
         const participantsList = document.createElement("ul");
         participantsList.className = "participants-list";
 
-        // Add each participant as a list item
+        // Add each participant as a list item with delete icon
         (details.participants || []).forEach((p) => {
           const li = document.createElement("li");
-          li.textContent = p;
+          
+          // Email text
+          const emailSpan = document.createElement("span");
+          emailSpan.textContent = p;
+          li.appendChild(emailSpan);
+          
+          // Delete icon
+          const deleteIcon = document.createElement("span");
+          deleteIcon.className = "delete-icon";
+          deleteIcon.textContent = "✕";
+          deleteIcon.title = `Remove ${p} from ${name}`;
+          
+          // Handle delete click
+          deleteIcon.addEventListener("click", async (event) => {
+            event.stopPropagation();
+            try {
+              const response = await fetch(
+                `/activities/${encodeURIComponent(name)}/signup/${encodeURIComponent(p)}`,
+                { method: "DELETE" }
+              );
+              
+              if (response.ok) {
+                // Remove the item from the DOM
+                li.remove();
+                // If no more participants, show a message
+                if (participantsList.children.length === 0) {
+                  const emptyMsg = document.createElement("li");
+                  emptyMsg.style.fontStyle = "italic";
+                  emptyMsg.style.color = "#999";
+                  emptyMsg.textContent = "No participants yet";
+                  participantsList.appendChild(emptyMsg);
+                }
+              } else {
+                const error = await response.json();
+                alert(error.detail || "Failed to unregister participant");
+              }
+            } catch (error) {
+              alert("Error unregistering participant: " + error.message);
+              console.error(error);
+            }
+          });
+          
+          li.appendChild(deleteIcon);
           participantsList.appendChild(li);
         });
+        
+        // Show message if no participants
+        if ((details.participants || []).length === 0) {
+          const emptyMsg = document.createElement("li");
+          emptyMsg.style.fontStyle = "italic";
+          emptyMsg.style.color = "#999";
+          emptyMsg.textContent = "No participants yet";
+          participantsList.appendChild(emptyMsg);
+        }
 
         participantsWrapper.appendChild(participantsList);
 
@@ -84,6 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        // Refresh activities list to show updated participant count
+        fetchActivities();
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
